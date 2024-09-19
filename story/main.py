@@ -1,6 +1,9 @@
 import pygame
 import sys
 import pygame_gui
+import json
+
+
 pygame.init()
 
 screen_width = 800
@@ -13,6 +16,29 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("แดนอบาย888")
 bg_story1 = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\4.png").convert_alpha()
 font_menu = pygame.font.Font(r'C:\Users\Woranat\OneDrive\Desktop\algro\game_project\FONT\BASKVILL.TTF', 30)
+
+def write_to_json(data, filename='user_data.json'):
+    try:
+        # Try to read existing data from the file
+        with open(filename, 'r') as file:
+            existing_data = json.load(file)
+    except FileNotFoundError:
+        # If file does not exist, initialize with an empty list
+        existing_data = []
+    except json.JSONDecodeError:
+        # Handle case where file is empty or corrupt
+        existing_data = []
+
+    # Append new data to the existing data
+    existing_data.append(data)
+
+    try:
+        # Write updated data back to the file
+        with open(filename, 'w') as file:
+            json.dump(existing_data, file, indent=4)
+    except IOError as e:
+        # Handle file writing errors
+        print(f"Error writing to file: {e}")
 
 def draw_background():
     back_size = pygame.transform.scale(bg_story1, (screen_width, screen_height))
@@ -40,7 +66,7 @@ def page3():
     text_rect = q1.get_rect(center=(screen_width // 2, (screen_height // 2) - 75))  # Positioned above input box
 
     # Define the input box dimensions
-    rect_x, rect_y = screen_width // 2 - 150, screen_height // 2
+    rect_x, rect_y = screen_width // 2 - 150, screen_height // 2-20
     rect_width, rect_height = 300, 50
 
     # Create a text input line, with no background (transparent)
@@ -52,7 +78,7 @@ def page3():
     user_input = ""  # Store user input
     input_finished = False  # Flag to check if input is done
     running = True
-    timer_started = False  # Timer for flipping page after input
+    timer_started = 0  # Timer for flipping page after input
 
     while running:
         UI_refresh = Clock.tick(60) / 1000.0
@@ -68,6 +94,7 @@ def page3():
                 input_finished = True  # Set flag when input is done
                 timer_started = pygame.time.get_ticks()  # Start timer to flip the page
 
+                write_to_json({"user_Name": user_input})
         Manager.update(UI_refresh)
         draw_background()  # Redraw the background for smooth UI update
 
@@ -93,32 +120,14 @@ def page3():
 
 def page4():
     draw_background()  # Show the background
-    q2 = font_menu.render('How long did you Advent?', True, color_text)
-    
-    text_rect = q2.get_rect(center=(screen_width // 2, (screen_height // 2)-15))
-    rect_width = 300  # Adjusted width to fit the text
-    rect_height = 50
-
-    rect_x = text_rect.centerx - (rect_width // 2)
-    rect_y = text_rect.bottom + 10  # Position the rectangle 10 pixels below the text
-    rect_q1 = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
-    
-    pygame.draw.rect(screen, color_rect, rect_q1)
-    
-    screen.blit(q2, text_rect.topleft)
-     draw_background()  # Show the background
     Clock = pygame.time.Clock()
     Manager = pygame_gui.UIManager((screen_width, screen_height))
-
-    # Render the question above the input box
-    q1 = font_menu.render('Well, who are you then?', True, color_text)
-    text_rect = q1.get_rect(center=(screen_width // 2, (screen_height // 2) - 75))  # Positioned above input box
-
-    # Define the input box dimensions
+    
+    q2 = font_menu.render('How long did you Advent?', True, color_text)
+    text_rect = q2.get_rect(center=(screen_width // 2, (screen_height // 2-40)))
     rect_x, rect_y = screen_width // 2 - 150, screen_height // 2
     rect_width, rect_height = 300, 50
 
-    # Create a text input line, with no background (transparent)
     TEXT_INPUT = pygame_gui.elements.UITextEntryLine(
         relative_rect=pygame.Rect((rect_x, rect_y), (rect_width, rect_height)),
         manager=Manager
@@ -143,11 +152,13 @@ def page4():
                 input_finished = True  # Set flag when input is done
                 timer_started = pygame.time.get_ticks()  # Start timer to flip the page
 
+                write_to_json({"age": user_input})
+        
         Manager.update(UI_refresh)
         draw_background()  # Redraw the background for smooth UI update
 
         # Draw the question text
-        screen.blit(q1, text_rect.topleft)
+        screen.blit(q2, text_rect.topleft)
 
         # Draw the filled rectangle for the input box with 'color_rect'
         pygame.draw.rect(screen, color_rect, (rect_x, rect_y, rect_width, rect_height))  # Filled rectangle
@@ -157,18 +168,20 @@ def page4():
 
         # If the input is finished, display the follow-up text
         if input_finished:
-            textq2 = font_menu.render(f"Nice to meet you, {user_input}!", True, color_text)
+            textq2 = font_menu.render(f"That a long time huh?!", True, color_text)
             screen.blit(textq2, ((screen_width // 2) - 150, (screen_height // 2) + 70))  # Positioned below input
 
             # After showing the text, wait for 2 seconds then flip to page 4
             if pygame.time.get_ticks() - timer_started > 2000:  # 2 seconds delay
-                page4()  # Call the next page function
+                page5()  # Call the next page function
 
         pygame.display.update()
-
+        
 def page5():
     draw_background()  # Show the background
-    q3 = font_menu.render('Do you want to play this game?', True, color_text)
+    Clock = pygame.time.Clock()
+
+    q3 = font_menu.render('Do you love your life?', True, color_text)
     
     # Position the question text
     text_rect = q3.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
@@ -179,7 +192,6 @@ def page5():
     rect_x = text_rect.centerx - (rect_width // 2)
     rect_y = text_rect.bottom + 10
 
-    
     # Draw the question text
     screen.blit(q3, text_rect.topleft)
     
@@ -191,8 +203,8 @@ def page5():
     total_buttons_width = button_width * 2 + 20  # Add space between buttons
     buttons_x = text_rect.centerx - (total_buttons_width // 2)
     
-    yes_button_rect = pygame.Rect(buttons_x, rect_y , button_width, button_height)
-    no_button_rect = pygame.Rect(buttons_x + button_width + 20, rect_y , button_width, button_height)
+    yes_button_rect = pygame.Rect(buttons_x, rect_y, button_width, button_height)
+    no_button_rect = pygame.Rect(buttons_x + button_width + 20, rect_y, button_width, button_height)
     
     pygame.draw.rect(screen, color_rect, yes_button_rect)
     pygame.draw.rect(screen, color_rect, no_button_rect)
@@ -204,18 +216,41 @@ def page5():
     screen.blit(yes_text, yes_button_rect.move((button_width - yes_text.get_width()) // 2, (button_height - yes_text.get_height()) // 2))
     screen.blit(no_text, no_button_rect.move((button_width - no_text.get_width()) // 2, (button_height - no_text.get_height()) // 2))
 
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if yes_button_rect.collidepoint(mouse_pos) or no_button_rect.collidepoint(mouse_pos) :
+                    page6() 
+
+        pygame.display.update()
+        Clock.tick(60)
+
 def page6():
     draw_background()  # Show the background
+    clock = pygame.time.Clock()
+
+    # Render the main question and additional text
     q5 = font_menu.render('What about your loved one?', True, color_text)
+    t1 = font_menu.render('Are they appreciate your life?', True, color_text)
     
-    # Position the question text
-    text_rect = q5.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
-    
-    # Draw the question text
-    screen.blit(q5, text_rect.topleft)
+    # Position the main question text
+    text_rect_q5 = q5.get_rect(center=(screen_width // 2, (screen_height // 2)-30))
+    # Position the additional text
+    text_rect_t1 = t1.get_rect(center=(screen_width // 2, (screen_height // 2)+10))
+
+    # Draw the main question text
+    screen.blit(q5, text_rect_q5.topleft)
+    # Draw the additional text
+    screen.blit(t1, text_rect_t1.topleft)
     
     # Draw "Yes", "I do not know", and "No" buttons
-    button_texts = ['of course', 'I do not know', 'No']  # Swapped "No" and "I do not know"
+    button_texts = ['of course', 'I do not know', 'No']
     button_widths = []
     button_heights = []
     button_rects = []
@@ -226,8 +261,8 @@ def page6():
         button_heights.append(text_surf.get_height() + 10)  # Adding padding
     
     total_buttons_width = sum(button_widths) + 20 * (len(button_texts) - 1)  # Space between buttons
-    buttons_x = text_rect.centerx - (total_buttons_width // 2)
-    buttons_y = text_rect.bottom + 20  # Adjust this value to position buttons
+    buttons_x = text_rect_q5.centerx - (total_buttons_width // 2)
+    buttons_y = text_rect_q5.bottom + 60  # Adjust this value to position buttons
     
     # Create button rectangles
     for i, (text, width, height) in enumerate(zip(button_texts, button_widths, button_heights)):
@@ -241,9 +276,35 @@ def page6():
         text_surf = font_menu.render(text, True, color_text)
         text_rect = text_surf.get_rect(center=rect.center)
         screen.blit(text_surf, text_rect.topleft)
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                for i, rect in enumerate(button_rects):
+                    if rect.collidepoint(mouse_pos):
+                        # Debug: print the button clicked
+                        print(f"Button clicked: {button_texts[i]}")
+                        # Determine which button was clicked and save to JSON
+                        choice = button_texts[i]
+                        write_to_json({"careing": choice})
+                        print("Data written to JSON")
+                        page7()  # Call the next page function
+                        return  # Exit the function after transitioning to the next page
+
+        pygame.display.update()
+        clock.tick(60)
 
 def page7():
     draw_background()  # Show the background
+    clock = pygame.time.Clock()
+
+    # Render the question text
     q6 = font_menu.render('Who is the most important to you?', True, color_text)
     
     # Position the question text
@@ -255,15 +316,15 @@ def page7():
     # Button texts divided into two rows
     button_texts_row1 = ['Family', 'Friends', 'Lover']
     button_texts_row2 = ['Pet', 'Yourself']
-    
+
     button_widths_row1 = []
     button_heights_row1 = []
     button_rects_row1 = []
-    
+
     button_widths_row2 = []
     button_heights_row2 = []
     button_rects_row2 = []
-    
+
     # Calculate button sizes for row 1
     for text in button_texts_row1:
         text_surf = font_menu.render(text, True, color_text)
@@ -307,22 +368,40 @@ def page7():
         screen.blit(text_surf, text_rect.topleft)
         buttons_x_row2 += width + 20  # Move x position for next button
 
-    # Update the display
-    pygame.display.flip()
+    # Combine all button rectangles into one list
+    button_rects = button_rects_row1 + button_rects_row2
+    button_texts = button_texts_row1 + button_texts_row2  # Flatten button texts for easy access
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                for i, rect in enumerate(button_rects):
+                    if rect.collidepoint(mouse_pos):
+                        # Determine which button was clicked and save to JSON
+                        choice = button_texts[i]
+                        write_to_json({"most_important": choice})
+                        print(f"Button clicked: {choice}")
+                        print("Data written to JSON")
+                        page8()  # Call the next page function
+                        return  # Exit the function after transitioning to the next page
+
+        pygame.display.update()
+        clock.tick(60)
 
 def page8():
     draw_background()  # Show the background
-    q7 = font_menu.render('Do you have any hobbies ?', True, color_text)
+    clock = pygame.time.Clock()
+    
+    q7 = font_menu.render('Do you have any hobbies?', True, color_text)
     
     # Position the question text
     text_rect = q7.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
-    
-    # Draw the rectangle behind the text
-    rect_width = 300
-    rect_height = 50
-    rect_x = text_rect.centerx - (rect_width // 2)
-    rect_y = text_rect.bottom + 10
-
     
     # Draw the question text
     screen.blit(q7, text_rect.topleft)
@@ -335,8 +414,8 @@ def page8():
     total_buttons_width = button_width * 2 + 20  # Add space between buttons
     buttons_x = text_rect.centerx - (total_buttons_width // 2)
     
-    yes_button_rect = pygame.Rect(buttons_x, rect_y , button_width, button_height)
-    no_button_rect = pygame.Rect(buttons_x + button_width + 20, rect_y , button_width, button_height)
+    yes_button_rect = pygame.Rect(buttons_x, text_rect.bottom + 10, button_width, button_height)
+    no_button_rect = pygame.Rect(buttons_x + button_width + 20, text_rect.bottom + 10, button_width, button_height)
     
     pygame.draw.rect(screen, color_rect, yes_button_rect)
     pygame.draw.rect(screen, color_rect, no_button_rect)
@@ -348,8 +427,34 @@ def page8():
     screen.blit(yes_text, yes_button_rect.move((button_width - yes_text.get_width()) // 2, (button_height - yes_text.get_height()) // 2))
     screen.blit(no_text, no_button_rect.move((button_width - no_text.get_width()) // 2, (button_height - no_text.get_height()) // 2))
 
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if yes_button_rect.collidepoint(mouse_pos):
+                    # Save choice and move to the next page
+                    write_to_json({"hobbies": "Yes"})
+                    page9()  # Call the next page function
+                    return  # Exit function after saving and transitioning
+                
+                if no_button_rect.collidepoint(mouse_pos):
+                    # Save choice and move to the next page
+                    write_to_json({"hobbies": "No"})
+                    page9()  # Call the next page function
+                    return  # Exit function after saving and transitioning
+
+        pygame.display.update()
+        clock.tick(60)
+
 def page9():
     draw_background()  # Show the background
+    clock = pygame.time.Clock()
+    
     q7 = font_menu.render('Still doing it right ??', True, color_text)
     
     # Position the question text
@@ -359,7 +464,7 @@ def page9():
     screen.blit(q7, text_rect.topleft)
     
     # Draw "Yes", "I do not know", and "No" buttons
-    button_texts = ['of course', 'Sometime', 'No']  # Swapped "No" and "I do not know"
+    button_texts = ['of course', 'Sometime', 'No']
     button_widths = []
     button_heights = []
     button_rects = []
@@ -385,34 +490,124 @@ def page9():
         text_surf = font_menu.render(text, True, color_text)
         text_rect = text_surf.get_rect(center=rect.center)
         screen.blit(text_surf, text_rect.topleft)
+    
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                for i, rect in enumerate(button_rects):
+                    if rect.collidepoint(mouse_pos):
+                        # Determine which button was clicked and save to JSON
+                        choice = button_texts[i]
+                        write_to_json({"doing_it_right": choice})
+                        page10()  # Call the next page function
+                        return  # Exit function after saving and transitioning
+
+        pygame.display.update()
+        clock.tick(60)
 
 def page10():
     draw_background()  # Show the background
+    clock = pygame.time.Clock()
+    Manager = pygame_gui.UIManager((screen_width, screen_height))
+
     # Render the texts
     q9 = font_menu.render('So how much do you want to trade?', True, color_text)
     q2 = font_menu.render('1 year = 8760 hours', True, color_text)
 
-    # Position the first text
-    text_rect_q9 = q9.get_rect(center=(screen_width // 2, (screen_height // 2) - 30))
+    # Position the texts
+    text_rect_q9 = q9.get_rect(center=(screen_width // 2, (screen_height // 2) - 40))
+    text_rect_q2 = q2.get_rect(center=(screen_width // 2, (screen_height // 2) + 10 ))
 
-    # Position the second text
-    text_rect_q2 = q2.get_rect(center=(screen_width // 2, (screen_height // 2) + 10))
-    
-    # Draw a rectangle under the second text
-    rect_width_q2 = text_rect_q2.width + 20  # Add padding to the width
-    rect_height_q2 = text_rect_q2.height + 20  # Add padding to the height
-    rect_x_q2 = text_rect_q2.centerx - (rect_width_q2 // 2)
-    rect_y_q2 = text_rect_q2.bottom + 10  # Position the rectangle slightly below the text
-    rect_q2 = pygame.Rect(rect_x_q2, rect_y_q2, rect_width_q2, rect_height_q2)
-    
-    pygame.draw.rect(screen, color_rect, rect_q2)
-    
-    # Draw the texts
+    # Draw the question text
     screen.blit(q9, text_rect_q9.topleft)
-    screen.blit(q2, text_rect_q2.topleft)
 
-def page11():   
+    # Create a text input line
+    rect_x, rect_y = screen_width // 2 - 150, screen_height // 2 + 30
+    rect_width, rect_height = 300, 50
+
+    TEXT_INPUT = pygame_gui.elements.UITextEntryLine(
+        relative_rect=pygame.Rect((rect_x, rect_y), (rect_width, rect_height)),
+        manager=Manager
+    )
+
+    user_input = ""  # Store user input
+    input_finished = False  # Flag to check if input is done
+    show_error_message = False  # Flag to determine if the error message is shown
+    valid_input_received = False  # Flag to indicate if valid input was received
+    running = True
+    timer_started = None  # Timer for displaying messages
+
+    while running:
+        UI_refresh = clock.tick(60) / 1000.0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            Manager.process_events(event)
+
+            # Handle input submission
+            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_element == TEXT_INPUT:
+                user_input = event.text  # Capture the input text
+                try:
+                    trade_hours = int(user_input)  # Convert input to int
+                    if trade_hours < 95:
+                        valid_input_received = True
+                        total_hours = trade_hours * 8760
+                        display_message = font_menu.render(f"You get {total_hours} hours!", True, color_text)
+                        input_finished = True
+                        timer_started = pygame.time.get_ticks()  # Start timer to flip the page
+                        show_error_message = False
+                        
+                        # Save the user input to JSON
+                        write_to_json({"trade_hours": trade_hours})
+                    else:
+                        display_message = font_menu.render("You don't have that much time!", True, color_text)
+                        input_finished = True
+                        timer_started = pygame.time.get_ticks()  # Start timer to show message
+                        show_error_message = True
+                except ValueError:
+                    display_message = font_menu.render("Invalid input. Please enter a number.", True, color_text)
+                    input_finished = True
+                    timer_started = pygame.time.get_ticks()  # Start timer to show message
+                    show_error_message = True
+
+        Manager.update(UI_refresh)
+        draw_background()  # Redraw the background for smooth UI update
+
+        # Draw the texts and rectangle
+        screen.blit(q9, text_rect_q9.topleft)
+        screen.blit(q2, text_rect_q2.topleft)
+
+        # Draw the text input field
+        pygame.draw.rect(screen, color_rect, (rect_x, rect_y, rect_width, rect_height))  # Filled rectangle
+        Manager.draw_ui(screen)
+
+        # If the input is finished
+        if input_finished:
+            # Draw the follow-up message
+            screen.blit(display_message, ((screen_width // 2) - display_message.get_width() // 2, (screen_height // 2) + 85))  # Positioned below input
+
+            # If showing an error message
+            if show_error_message and pygame.time.get_ticks() - timer_started > 3000:  # 3 seconds delay for error message
+                input_finished = False
+                show_error_message = False
+                TEXT_INPUT.clear()  # Clear the previous input
+                user_input = ""  # Reset user input
+            elif valid_input_received and pygame.time.get_ticks() - timer_started > 2000:  # 2 seconds delay for valid input
+                page11()  # Call the next page function
+
+        pygame.display.update()
+
+def page11():
     draw_background()  # Show the background
+    clock = pygame.time.Clock()
+    
     q7 = font_menu.render('Are you ready to play ?', True, color_text)
     
     # Position the question text
@@ -424,7 +619,6 @@ def page11():
     rect_x = text_rect.centerx - (rect_width // 2)
     rect_y = text_rect.bottom + 10
 
-    
     # Draw the question text
     screen.blit(q7, text_rect.topleft)
     
@@ -448,6 +642,30 @@ def page11():
     # Center the text inside the buttons
     screen.blit(yes_text, yes_button_rect.move((button_width - yes_text.get_width()) // 2, (button_height - yes_text.get_height()) // 2))
     screen.blit(no_text, no_button_rect.move((button_width - no_text.get_width()) // 2, (button_height - no_text.get_height()) // 2))
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                if yes_button_rect.collidepoint(mouse_pos):
+                    write_to_json({"ready_to_play": "Yes"})
+                    screen.fill((0, 0, 0))  # Clear screen or proceed as needed
+                    pygame.display.update()
+                    # Proceed to the next page or action
+                elif no_button_rect.collidepoint(mouse_pos):
+                    write_to_json({"ready_to_play": "No"})
+                    screen.fill((0, 0, 0))  # Clear screen or proceed as needed
+                    pygame.display.update()
+                    # Proceed to the next page or action
+
+        pygame.display.update()
+        clock.tick(60)
+
 
 run = True
 page_number = 1  # Track which page we are on
