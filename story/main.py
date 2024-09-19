@@ -10,7 +10,7 @@ color_rect = (188,159,124)
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("แดนอบาย888")
-bg_story1 = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\เริ่มเกม (1).png").convert_alpha()
+bg_story1 = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\4.png").convert_alpha()
 font_menu = pygame.font.Font(r'C:\Users\Woranat\OneDrive\Desktop\algro\game_project\FONT\BASKVILL.TTF', 30)
 
 def draw_background():
@@ -139,7 +139,7 @@ def page6():
 
 def page7():
     draw_background()  # Show the background
-    q6 = font_menu.render('Who is the most important to you ?', True, color_text)
+    q6 = font_menu.render('Who is the most important to you?', True, color_text)
     
     # Position the question text
     text_rect = q6.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
@@ -147,33 +147,66 @@ def page7():
     # Draw the question text
     screen.blit(q6, text_rect.topleft)
     
-    # Draw "Yes", "I do not know", and "No" buttons
-    button_texts = ['Family', 'Friends', 'Lover' ,'Pet','Yourself']
-    button_widths = []
-    button_heights = []
-    button_rects = []
+    # Button texts divided into two rows
+    button_texts_row1 = ['Family', 'Friends', 'Lover']
+    button_texts_row2 = ['Pet', 'Yourself']
     
-    for text in button_texts:
+    button_widths_row1 = []
+    button_heights_row1 = []
+    button_rects_row1 = []
+    
+    button_widths_row2 = []
+    button_heights_row2 = []
+    button_rects_row2 = []
+    
+    # Calculate button sizes for row 1
+    for text in button_texts_row1:
         text_surf = font_menu.render(text, True, color_text)
-        button_widths.append(text_surf.get_width() + 20)  # Adding padding
-        button_heights.append(text_surf.get_height() + 10)  # Adding padding
+        button_widths_row1.append(text_surf.get_width() + 20)  # Adding padding
+        button_heights_row1.append(text_surf.get_height() + 10)  # Adding padding
     
-    total_buttons_width = sum(button_widths) + 20 * (len(button_texts) - 1)  # Space between buttons
-    buttons_x = text_rect.centerx - (total_buttons_width // 2)
-    buttons_y = text_rect.bottom + 20  # Adjust this value to position buttons
+    # Calculate button sizes for row 2
+    for text in button_texts_row2:
+        text_surf = font_menu.render(text, True, color_text)
+        button_widths_row2.append(text_surf.get_width() + 20)  # Adding padding
+        button_heights_row2.append(text_surf.get_height() + 10)  # Adding padding
     
-    # Create button rectangles
-    for i, (text, width, height) in enumerate(zip(button_texts, button_widths, button_heights)):
-        rect = pygame.Rect(buttons_x, buttons_y, width, height)
-        button_rects.append(rect)
-        buttons_x += width + 20  # Move x position for next button
-
-    # Draw rectangles and text
-    for rect, text in zip(button_rects, button_texts):
+    # Calculate total width and initial x positions for both rows
+    total_buttons_width_row1 = sum(button_widths_row1) + 20 * (len(button_texts_row1) - 1)  # Space between buttons
+    total_buttons_width_row2 = sum(button_widths_row2) + 20 * (len(button_texts_row2) - 1)
+    
+    buttons_x_row1 = text_rect.centerx - (total_buttons_width_row1 // 2)
+    buttons_x_row2 = text_rect.centerx - (total_buttons_width_row2 // 2)
+    
+    buttons_y_row1 = text_rect.bottom + 30  # Increased spacing for clarity
+    buttons_y_row2 = buttons_y_row1 + max(button_heights_row1) + 40  # Additional spacing between rows
+    
+    # Create button rectangles for row 1
+    for i, (text, width, height) in enumerate(zip(button_texts_row1, button_widths_row1, button_heights_row1)):
+        rect = pygame.Rect(buttons_x_row1, buttons_y_row1, width, height)
+        button_rects_row1.append(rect)
+        buttons_x_row1 += width + 20  # Move x position for next button
+    
+    # Create button rectangles for row 2
+    for i, (text, width, height) in enumerate(zip(button_texts_row2, button_widths_row2, button_heights_row2)):
+        rect = pygame.Rect(buttons_x_row2, buttons_y_row2, width, height)
+        button_rects_row2.append(rect)
+        buttons_x_row2 += width + 20
+    
+    # Draw rectangles and text for row 1
+    for rect, text in zip(button_rects_row1, button_texts_row1):
         pygame.draw.rect(screen, color_rect, rect)
         text_surf = font_menu.render(text, True, color_text)
         text_rect = text_surf.get_rect(center=rect.center)
         screen.blit(text_surf, text_rect.topleft)
+    
+    # Draw rectangles and text for row 2
+    for rect, text in zip(button_rects_row2, button_texts_row2):
+        pygame.draw.rect(screen, color_rect, rect)
+        text_surf = font_menu.render(text, True, color_text)
+        text_rect = text_surf.get_rect(center=rect.center)
+        screen.blit(text_surf, text_rect.topleft)
+
 
 def page7():
     draw_background()  # Show the background

@@ -1,19 +1,11 @@
 import pygame
-
-'''def icon():
+def icon():
     Nails = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\icon\nail1.png").convert_alpha()
     hair = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\icon\hair1.png").convert_alpha()
     Arrow = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\icon\arrowbuff1.png").convert_alpha()
     Guman = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\icon\Guman1.png").convert_alpha()
     Nanartong = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\icon\Nanartong1.png").convert_alpha()
     return Nails,hair,Arrow,Guman,Nanartong,
-'''
-
-def icon() :
-
-    Nail = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\image-from-rawpixel-id-6060259-jpeg-removebg-preview.png").convert_alpha()
-    Arrow = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\image-from-rawpixel-id-481405-jpeg-removebg-preview.png").convert_alpha()
-    hair = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\image-from-rawpixel-id-481405-jpeg-removebg-preview.png").convert_alpha()
 
 def mail_pic():
     mail = pygame.image.load(r"C:\Users\Woranat\OneDrive\Desktop\algro\game_project\photo\mail.png").convert_alpha()
