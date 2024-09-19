@@ -1,5 +1,6 @@
 import pygame
-
+import sys
+import pygame_gui
 pygame.init()
 
 screen_width = 800
@@ -31,19 +32,64 @@ def page2():
 
 def page3():
     draw_background()  # Show the background
-    q1 = font_menu.render('Well, who are you then?', True, color_text)
-    
-    text_rect = q1.get_rect(center=(screen_width // 2, (screen_height // 2)-15))
-    rect_width = 300  # Adjusted width to fit the text
-    rect_height = 50
+    Clock = pygame.time.Clock()
+    Manager = pygame_gui.UIManager((screen_width, screen_height))
 
-    rect_x = text_rect.centerx - (rect_width // 2)
-    rect_y = text_rect.bottom + 10  # Position the rectangle 10 pixels below the text
-    rect_q1 = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
-    
-    pygame.draw.rect(screen, color_rect, rect_q1)
-    
-    screen.blit(q1, text_rect.topleft)
+    # Render the question above the input box
+    q1 = font_menu.render('Well, who are you then?', True, color_text)
+    text_rect = q1.get_rect(center=(screen_width // 2, (screen_height // 2) - 75))  # Positioned above input box
+
+    # Define the input box dimensions
+    rect_x, rect_y = screen_width // 2 - 150, screen_height // 2
+    rect_width, rect_height = 300, 50
+
+    # Create a text input line, with no background (transparent)
+    TEXT_INPUT = pygame_gui.elements.UITextEntryLine(
+        relative_rect=pygame.Rect((rect_x, rect_y), (rect_width, rect_height)),
+        manager=Manager
+    )
+
+    user_input = ""  # Store user input
+    input_finished = False  # Flag to check if input is done
+    running = True
+    timer_started = False  # Timer for flipping page after input
+
+    while running:
+        UI_refresh = Clock.tick(60) / 1000.0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            Manager.process_events(event)
+
+            # Handle input submission
+            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_element == TEXT_INPUT:
+                user_input = event.text  # Capture the input text
+                input_finished = True  # Set flag when input is done
+                timer_started = pygame.time.get_ticks()  # Start timer to flip the page
+
+        Manager.update(UI_refresh)
+        draw_background()  # Redraw the background for smooth UI update
+
+        # Draw the question text
+        screen.blit(q1, text_rect.topleft)
+
+        # Draw the filled rectangle for the input box with 'color_rect'
+        pygame.draw.rect(screen, color_rect, (rect_x, rect_y, rect_width, rect_height))  # Filled rectangle
+
+        # Draw the text input field (no need for a separate rectangle border)
+        Manager.draw_ui(screen)
+
+        # If the input is finished, display the follow-up text
+        if input_finished:
+            textq2 = font_menu.render(f"Nice to meet you, {user_input}!", True, color_text)
+            screen.blit(textq2, ((screen_width // 2) - 150, (screen_height // 2) + 70))  # Positioned below input
+
+            # After showing the text, wait for 2 seconds then flip to page 4
+            if pygame.time.get_ticks() - timer_started > 2000:  # 2 seconds delay
+                page4()  # Call the next page function
+
+        pygame.display.update()
 
 def page4():
     draw_background()  # Show the background
@@ -60,6 +106,65 @@ def page4():
     pygame.draw.rect(screen, color_rect, rect_q1)
     
     screen.blit(q2, text_rect.topleft)
+     draw_background()  # Show the background
+    Clock = pygame.time.Clock()
+    Manager = pygame_gui.UIManager((screen_width, screen_height))
+
+    # Render the question above the input box
+    q1 = font_menu.render('Well, who are you then?', True, color_text)
+    text_rect = q1.get_rect(center=(screen_width // 2, (screen_height // 2) - 75))  # Positioned above input box
+
+    # Define the input box dimensions
+    rect_x, rect_y = screen_width // 2 - 150, screen_height // 2
+    rect_width, rect_height = 300, 50
+
+    # Create a text input line, with no background (transparent)
+    TEXT_INPUT = pygame_gui.elements.UITextEntryLine(
+        relative_rect=pygame.Rect((rect_x, rect_y), (rect_width, rect_height)),
+        manager=Manager
+    )
+
+    user_input = ""  # Store user input
+    input_finished = False  # Flag to check if input is done
+    running = True
+    timer_started = False  # Timer for flipping page after input
+
+    while running:
+        UI_refresh = Clock.tick(60) / 1000.0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            Manager.process_events(event)
+
+            # Handle input submission
+            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_element == TEXT_INPUT:
+                user_input = event.text  # Capture the input text
+                input_finished = True  # Set flag when input is done
+                timer_started = pygame.time.get_ticks()  # Start timer to flip the page
+
+        Manager.update(UI_refresh)
+        draw_background()  # Redraw the background for smooth UI update
+
+        # Draw the question text
+        screen.blit(q1, text_rect.topleft)
+
+        # Draw the filled rectangle for the input box with 'color_rect'
+        pygame.draw.rect(screen, color_rect, (rect_x, rect_y, rect_width, rect_height))  # Filled rectangle
+
+        # Draw the text input field (no need for a separate rectangle border)
+        Manager.draw_ui(screen)
+
+        # If the input is finished, display the follow-up text
+        if input_finished:
+            textq2 = font_menu.render(f"Nice to meet you, {user_input}!", True, color_text)
+            screen.blit(textq2, ((screen_width // 2) - 150, (screen_height // 2) + 70))  # Positioned below input
+
+            # After showing the text, wait for 2 seconds then flip to page 4
+            if pygame.time.get_ticks() - timer_started > 2000:  # 2 seconds delay
+                page4()  # Call the next page function
+
+        pygame.display.update()
 
 def page5():
     draw_background()  # Show the background
@@ -142,7 +247,7 @@ def page7():
     q6 = font_menu.render('Who is the most important to you?', True, color_text)
     
     # Position the question text
-    text_rect = q6.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
+    text_rect = q6.get_rect(center=(screen_width // 2, (screen_height // 2.5)))
     
     # Draw the question text
     screen.blit(q6, text_rect.topleft)
@@ -178,74 +283,32 @@ def page7():
     buttons_x_row1 = text_rect.centerx - (total_buttons_width_row1 // 2)
     buttons_x_row2 = text_rect.centerx - (total_buttons_width_row2 // 2)
     
-    buttons_y_row1 = text_rect.bottom + 30  # Increased spacing for clarity
-    buttons_y_row2 = buttons_y_row1 + max(button_heights_row1) + 40  # Additional spacing between rows
+    # Explicitly set Y positions
+    buttons_y_row1 = text_rect.bottom + 20  # Ensure there's enough space
+    buttons_y_row2 = buttons_y_row1 + max(button_heights_row1) + 30  # Ensure it's below row 1
     
-    # Create button rectangles for row 1
+    # Create and draw button rectangles for row 1
     for i, (text, width, height) in enumerate(zip(button_texts_row1, button_widths_row1, button_heights_row1)):
         rect = pygame.Rect(buttons_x_row1, buttons_y_row1, width, height)
         button_rects_row1.append(rect)
+        pygame.draw.rect(screen, color_rect, rect)
+        text_surf = font_menu.render(text, True, color_text)
+        text_rect = text_surf.get_rect(center=rect.center)
+        screen.blit(text_surf, text_rect.topleft)
         buttons_x_row1 += width + 20  # Move x position for next button
     
-    # Create button rectangles for row 2
+    # Create and draw button rectangles for row 2
     for i, (text, width, height) in enumerate(zip(button_texts_row2, button_widths_row2, button_heights_row2)):
         rect = pygame.Rect(buttons_x_row2, buttons_y_row2, width, height)
         button_rects_row2.append(rect)
-        buttons_x_row2 += width + 20
-    
-    # Draw rectangles and text for row 1
-    for rect, text in zip(button_rects_row1, button_texts_row1):
         pygame.draw.rect(screen, color_rect, rect)
         text_surf = font_menu.render(text, True, color_text)
         text_rect = text_surf.get_rect(center=rect.center)
         screen.blit(text_surf, text_rect.topleft)
-    
-    # Draw rectangles and text for row 2
-    for rect, text in zip(button_rects_row2, button_texts_row2):
-        pygame.draw.rect(screen, color_rect, rect)
-        text_surf = font_menu.render(text, True, color_text)
-        text_rect = text_surf.get_rect(center=rect.center)
-        screen.blit(text_surf, text_rect.topleft)
+        buttons_x_row2 += width + 20  # Move x position for next button
 
-
-def page7():
-    draw_background()  # Show the background
-    q6 = font_menu.render('Who is the most important to you?', True, color_text)
-    
-    # Position the question text
-    text_rect = q6.get_rect(center=(screen_width // 2, (screen_height // 2) - 15))
-    
-    # Draw the question text
-    screen.blit(q6, text_rect.topleft)
-    
-    # Button texts and dimensions
-    button_texts = ['Family', 'Friends', 'Lover', 'Pet', 'Yourself']
-    button_widths = []
-    button_heights = []
-    button_rects = []
-    
-    # Calculate button dimensions
-    for text in button_texts:
-        text_surf = font_menu.render(text, True, color_text)
-        button_widths.append(text_surf.get_width() + 20)  # Adding padding
-        button_heights.append(text_surf.get_height() + 10)  # Adding padding
-    
-    total_buttons_width = sum(button_widths) + 20 * (len(button_texts) - 1)  # Space between buttons
-    buttons_x = text_rect.centerx - (total_buttons_width // 2)
-    buttons_y = text_rect.bottom + 20  # Position buttons below the text
-    
-    # Create button rectangles
-    for i, (text, width, height) in enumerate(zip(button_texts, button_widths, button_heights)):
-        rect = pygame.Rect(buttons_x, buttons_y, width, height)
-        button_rects.append(rect)
-        buttons_x += width + 20  # Move x position for next button
-
-    # Draw rectangles and text for each button
-    for rect, text in zip(button_rects, button_texts):
-        pygame.draw.rect(screen, color_rect, rect)
-        text_surf = font_menu.render(text, True, color_text)
-        text_rect = text_surf.get_rect(center=rect.center)
-        screen.blit(text_surf, text_rect.topleft)
+    # Update the display
+    pygame.display.flip()
 
 def page8():
     draw_background()  # Show the background
@@ -295,13 +358,12 @@ def page9():
     # Draw the question text
     screen.blit(q7, text_rect.topleft)
     
-    # Button texts and dimensions
-    button_texts = ['of course', 'sometime', 'Not anymore']
+    # Draw "Yes", "I do not know", and "No" buttons
+    button_texts = ['of course', 'Sometime', 'No']  # Swapped "No" and "I do not know"
     button_widths = []
     button_heights = []
     button_rects = []
     
-    # Calculate button dimensions
     for text in button_texts:
         text_surf = font_menu.render(text, True, color_text)
         button_widths.append(text_surf.get_width() + 20)  # Adding padding
@@ -309,7 +371,7 @@ def page9():
     
     total_buttons_width = sum(button_widths) + 20 * (len(button_texts) - 1)  # Space between buttons
     buttons_x = text_rect.centerx - (total_buttons_width // 2)
-    buttons_y = text_rect.bottom + 20  # Position buttons below the text
+    buttons_y = text_rect.bottom + 20  # Adjust this value to position buttons
     
     # Create button rectangles
     for i, (text, width, height) in enumerate(zip(button_texts, button_widths, button_heights)):
@@ -317,7 +379,7 @@ def page9():
         button_rects.append(rect)
         buttons_x += width + 20  # Move x position for next button
 
-    # Draw rectangles and text for each button
+    # Draw rectangles and text
     for rect, text in zip(button_rects, button_texts):
         pygame.draw.rect(screen, color_rect, rect)
         text_surf = font_menu.render(text, True, color_text)
@@ -327,7 +389,7 @@ def page9():
 def page10():
     draw_background()  # Show the background
     # Render the texts
-    q9 = font_menu.render('So how much do you want to trade your hour of life?', True, color_text)
+    q9 = font_menu.render('So how much do you want to trade?', True, color_text)
     q2 = font_menu.render('1 year = 8760 hours', True, color_text)
 
     # Position the first text

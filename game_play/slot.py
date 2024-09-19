@@ -28,11 +28,11 @@ class IconLocation:
         self.text = text
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.text_surface = font1.render(text, True, (255, 255, 255))  # Use font1
+        self.text_surface = font1.render(text, True, (74, 19, 15))  # Use font1
 
     def set_text(self, text):
         self.text = text
-        self.text_surface = font1.render(text, True, (255, 255, 255))  # Use font1
+        self.text_surface = font1.render(text, True, (74, 19, 15))  # Use font1
 
     def draw(self, screen):
         text_rect = self.text_surface.get_rect(center=(self.pos_x + 75, self.pos_y + 100))  # Center text in the icon area
