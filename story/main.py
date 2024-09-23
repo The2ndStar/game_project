@@ -4,7 +4,8 @@ import pygame_gui
 import json
 import os
 import time
-
+sys.path.append(r'C:\Users\Woranat\OneDrive\Desktop\algro\game_project')
+from menu.gameselect import gameselect
 
 
 
@@ -670,12 +671,12 @@ def Story(screen) :
                     mouse_pos = event.pos
                     if yes_button_rect.collidepoint(mouse_pos):
                         write_to_json({"ready_to_play": "Yes"})
-                        screen.fill((0, 0, 0))  # Clear screen or proceed as needed
+                        gameselect(screen)  # Clear screen or proceed as needed
                         pygame.display.update()
                     # Proceed to the next page or action
                     elif no_button_rect.collidepoint(mouse_pos):
                         write_to_json({"ready_to_play": "No"})
-                        screen.fill((0, 0, 0))  # Clear screen or proceed as needed
+                        gameselect(screen)  # Clear screen or proceed as needed
                         pygame.display.update()
                     # Proceed to the next page or action
 

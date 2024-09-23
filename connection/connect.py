@@ -6,8 +6,7 @@ import pygame
 sys.path.append(r'C:\Users\Woranat\OneDrive\Desktop\algro\game_project')
 
 from menu.startmenu import Start
-from story.main import Story1
-from menu.gameselect import gameselect  # Ensure this import is correct
+from story.main import Story
 
 pygame.init()
 
@@ -23,13 +22,10 @@ def main():
         return
     
     # Display the Story pages
-    if not Story1(screen):
+    if not Story(screen):
         pygame.quit()
         return
-    
-    if not gameselect(screen):
-        pygame.quit()
-        return
+
     
     pygame.quit()
 
