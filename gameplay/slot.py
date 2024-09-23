@@ -4,7 +4,7 @@ import numpy as np
 import time
 import json
 
-def slot():
+def slot(screen):
     # Initialize Pygame
     pygame.init()
 
